@@ -1,0 +1,6 @@
+aiogram==3.12.0
+SQLAlchemy==2.0.35
+python-dotenv==1.0.1
+aiofiles==23.2.1
+magic-filter==1.0.12
+typing-extensions==4.12.2
