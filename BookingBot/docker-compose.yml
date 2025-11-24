@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  booking-bot:
+    build: .
+    container_name: booking_bot
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data  # для сохранения SQLite базы данных
+      - ./logs:/app/logs  # для логов
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./data/booking_bot.db
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    networks:
+      - booking-network
+
+  postgres:
+    image: postgres:15
+    container_name: booking_postgres
+    environment:
+      POSTGRES_DB: booking_bot_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # если есть начальные данные
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - booking-network
+
+volumes:
+  postgres_data:
+
+networks:
+  booking-network:
+    driver: bridge
